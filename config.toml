@@ -1,0 +1,37 @@
+baseURL = "https://waelgharbi.github.io/"
+languageCode = "fr-FR"
+title = "Wael Gharbi — Architecte | Revit Specialist"
+theme = "hugo-papermod"
+defaultContentLanguage = "fr"
+googleAnalytics = "G-K34S7R68LY"
+
+[params]
+  author = "Wael Gharbi"
+  description = "Architecte, Spécialiste Revit — Portfolio & Blog"
+  showDate = true
+  mainSections = ["projects","blog"]
+
+[menu]
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    name = "Projects"
+    url = "/projects/"
+    weight = 2
+  [[menu.main]]
+    name = "Blog"
+    url = "/blog/"
+    weight = 3
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 4
+  [[menu.main]]
+    name = "Contact"
+    url = "/#contact"
+    weight = 5
+
+[params.social]
+  linkedin = "https://www.linkedin.com/in/wael-gharbi/"
