@@ -23,14 +23,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.128.0
+      HUGO_VERSION: 0.146.0
 
     steps:
+
+      # ---------------------------------------------
+      # 🧩 Install latest compatible Hugo (extended)
+      # ---------------------------------------------
       - name: Install Hugo CLI
         run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+          wget -O ${{ runner.temp }}/hugo.deb \
+            https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb
+          sudo dpkg -i ${{ runner.temp }}/hugo.deb
 
+      # Needed for PaperMod (SCSS)
       - name: Install Dart Sass
         run: sudo snap install dart-sass
 
@@ -39,15 +45,18 @@ jobs:
         with:
           submodules: recursive
 
+      # Required for GitHub Pages
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
 
+      # Install Node dependencies if present
       - name: Install Node.js dependencies
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+        run: |
+          [[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true
 
       # -------------------------------------------------------
-      # 🎯 Fix PaperMod : Fetch Hugo Modules properly
+      # 🎯 PaperMod — Fix Hugo Modules properly
       # -------------------------------------------------------
       - name: Setup Hugo Modules
         run: |
@@ -63,15 +72,17 @@ jobs:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
           HUGO_ENVIRONMENT: production
         run: |
-          hugo \
-            --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+          hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
 
+      # Upload output for deployment
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
 
+  # -------------------------------------------------------
+  # 🚀 Deployment job
+  # -------------------------------------------------------
   deploy:
     environment:
       name: github-pages
